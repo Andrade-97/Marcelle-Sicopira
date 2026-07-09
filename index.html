@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcelle Sicopira // Visual System</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS RESET & SYSTEM VARIABLES */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-color: #0b0b0d;
+            --card-bg: rgba(20, 20, 24, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-dark: #52525b;
+            
+            /* Neon color system matching the design sheet */
+            --neon-music: #d946ef;
+            --neon-music-glow: rgba(217, 70, 239, 0.15);
+            --neon-jiujitsu: #ff4b4b;
+            --neon-jiujitsu-glow: rgba(255, 75, 75, 0.15);
+            --neon-engineering: #00f0ff;
+            --neon-engineering-glow: rgba(0, 240, 255, 0.15);
+
+            --font-mono: 'Fira Code', monospace;
+            --font-sans: 'Outfit', sans-serif;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-primary);
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.5;
+            letter-spacing: -0.01em;
+        }
+
+        /* DYNAMIC BG CANVAS */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* GRID SYSTEM STRUCTURE */
+        .wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            position: relative;
+        }
+
+        /* DESIGN SPEC LABELS */
+        .spec-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .spec-label::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--text-dark);
+            display: inline-block;
+        }
+
+        /* VISUAL BOARD HEADER */
+        header {
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .system-marker {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .system-marker span {
+            color: var(--neon-music);
+        }
+
+        .header-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            background: linear-gradient(135deg, #ffffff 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-left: 2px solid var(--neon-music);
+            padding-left: 1rem;
+        }
+
+        /* MODULAR CARDS GRID */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+
+        /* THE CARD */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            background: rgba(24, 24, 28, 0.9);
+        }
+
+        /* Neon focus states */
+        .card-music:hover {
+            border-color: var(--neon-music);
+            box-shadow: 0 10px 30px var(--neon-music-glow);
+        }
+
+        .card-jiujitsu:hover {
+            border-color: var(--neon-jiujitsu);
+            box-shadow: 0 10px 30px var(--neon-jiujitsu-glow);
+        }
+
+        .card-engineering:hover {
+            border-color: var(--neon-engineering);
+            box-shadow: 0 10px 30px var(--neon-engineering-glow);
+        }
+
+        .card:hover .bjj-photo {
+            transform: scale(1.04);
+        }
+
+        /* Card Header Elements */
+        .card-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-index {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .card-icon-glow {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+            transition: var(--transition-smooth);
+        }
+
+        .card-music .card-icon-glow { color: var(--neon-music); box-shadow: inset 0 0 10px rgba(217, 70, 239, 0.15); }
+        .card-jiujitsu .card-icon-glow { color: var(--neon-jiujitsu); box-shadow: inset 0 0 10px rgba(255, 75, 75, 0.15); }
+        .card-engineering .card-icon-glow { color: var(--neon-engineering); box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.15); }
+
+        .card:hover .card-icon-glow {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-title-group h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .card-title-group p {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        /* 01. MUSIC PLAYER & PLAYLIST WIDGET */
+        .music-widget {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .vinyl-disk {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #3f3f46 25%, #18181b 30%, #27272a 40%, #09090b 70%);
+            border: 2.2px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .vinyl-disk::before {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--neon-music);
+        }
+
+        .vinyl-disk.playing {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .track-details {
+            flex-grow: 1;
+        }
+
+        .track-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .track-artist {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
+        /* Soundwave */
+        .soundwave {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 20px;
+        }
+
+        .soundwave-bar {
+            width: 2.5px;
+            height: 3px;
+            background-color: var(--neon-music);
+            border-radius: 1px;
+        }
+
+        .vinyl-disk.playing ~ .soundwave .soundwave-bar:nth-child(1) { animation: wave 0.8s ease infinite alternate; }
+        .vinyl-disk.playing ~ .soundwave .soundwave-bar:nth-child(2) { animation: wave 0.5s ease infinite alternate 0.1s; }
+        .vinyl-disk.playing ~ .soundwave .soundwave-bar:nth-child(3) { animation: wave 0.9s ease infinite alternate 0.2s; }
+        .vinyl-disk.playing ~ .soundwave .soundwave-bar:nth-child(4) { animation: wave 0.6s ease infinite alternate 0.3s; }
+
+        @keyframes wave {
+            0% { height: 3px; }
+            100% { height: 16px; }
+        }
+
+        /* HTML5 Media Player Custom Controls */
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 0.8rem;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--neon-music);
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+
+        .control-buttons-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.2rem;
+        }
+
+        .play-nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            color: var(--neon-music);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .control-btn.play-btn {
+            background: var(--neon-music);
+            color: var(--bg-color);
+            width: 38px;
+            height: 38px;
+            font-size: 0.95rem;
+        }
+
+        .control-btn.play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px var(--neon-music-glow);
+            color: var(--bg-color);
+        }
+
+        /* YouTube Stream Link */
+        .yt-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: var(--transition-smooth);
+        }
+
+        .yt-link-btn:hover {
+            background: #ef4444;
+            color: #0b0b0d;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
+        }
+
+        /* PLAYLIST COMPONENT */
+        .playlist-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .playlist-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .playlist-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.01);
+        }
+        .playlist-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+        }
+        .playlist-container::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-music);
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(217, 70, 239, 0.2);
+        }
+
+        .playlist-item.active {
+            background: rgba(217, 70, 239, 0.08);
+            border-color: rgba(217, 70, 239, 0.3);
+        }
+
+        .song-num {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            width: 15px;
+        }
+
+        .playlist-item.active .song-num {
+            color: var(--neon-music);
+        }
+
+        .song-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .song-title {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .song-artist {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .play-icon-small {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            transition: var(--transition-smooth);
+        }
+
+        .playlist-item:hover .play-icon-small, .playlist-item.active .play-icon-small {
+            color: var(--neon-music);
+            transform: scale(1.1);
+        }
+
+        /* 02. JIU-JITSU & MUSCULAÇÃO WIDGETS */
+        .jiujitsu-widget {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        /* Off-White Belt (Faixa Branca) with 3 white stripes on black sleeve */
+        .belt-representation {
+            width: 100%;
+            height: 36px;
+            background: #ffffff; /* Faixa Branca */
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.08);
+        }
+
+        .belt-representation::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.15) 55%, rgba(255,255,255,0.1) 100%);
+            pointer-events: none;
+        }
+
+        .belt-fold {
+            width: 4px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.15);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .belt-sleeve {
+            position: absolute;
+            right: 20px;
+            width: 60px;
+            height: 100%;
+            background: #09090b; /* Black sleeve bar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0 5px;
+            border-left: 2px solid #000;
+            border-right: 2px solid #000;
+            z-index: 2;
+        }
+
+        /* Exactly 3 stripes */
+        .belt-stripe {
+            width: 4.5px;
+            height: 70%;
+            background: white;
+            border-radius: 1px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+
+        .belt-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            text-align: center;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 03. CIVIL ENGINEERING WIDGETS */
+        .engineering-widget {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* CONCRETE ESTIMATOR WIDGET */
+        .concrete-calc {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .concrete-calc-title {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--neon-engineering);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group label {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.45rem 0.6rem;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.82rem;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .card-engineering .form-group input:focus, 
+        .card-engineering .form-group select:focus {
+            border-color: var(--neon-engineering);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .engineering-calc-btn {
+            background: var(--neon-engineering);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: var(--font-sans);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .engineering-calc-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--neon-engineering-glow);
+        }
+
+        .concrete-results {
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
+            padding-top: 0.8rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .result-tile {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-tile-label {
+            font-size: 0.6rem;
+            color: var(--text-dark);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .result-tile-val {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 2px;
+        }
+
+        .result-tile-val span {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-left: 2px;
+        }
+
+        /* BLUEPRINT CAD SCREEN */
+        .blueprint-container {
+            width: 100%;
+            height: 100px;
+            background: #060814;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blueprint-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: 12px 12px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.08) 1px, transparent 1px);
+        }
+
+        .blueprint-svg {
+            position: absolute;
+            width: 85%;
+            height: 80%;
+            z-index: 2;
+        }
+
+        .blueprint-path {
+            stroke: #00f0ff;
+            stroke-width: 1.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+        }
+
+        .blueprint-container.drawn .blueprint-path {
+            animation: drawBlueprint 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes drawBlueprint {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .blueprint-overlay-text {
+            position: absolute;
+            bottom: 4px;
+            right: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            color: rgba(0, 240, 255, 0.4);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* DECORATIONS (The Monospace layout guidelines from sheet) */
+        .grid-decorations {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .design-sheet-info {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-dark);
+            text-transform: uppercase;
+        }
+
+        /* SYSTEM FOOTER */
+        footer {
+            text-align: center;
+            padding: 3rem 0 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        footer span {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-heart {
+            color: var(--neon-jiujitsu);
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* RESPONSIVE LAYOUT */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .header-main {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .wrapper {
+                padding: 1.5rem 1rem;
+                gap: 1.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Glowing Vector Particles Backdrop -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="wrapper">
+        
+        <!-- SYSTEM SPEC LABELS -->
+        <div class="spec-label">VISUAL IDENTITY SYSTEM // ACTIVE</div>
+
+        <!-- HEADER BOARD -->
+        <header>
+            <div class="header-top">
+                <div class="system-marker">// PLATFORM: <span>MARCELLE_SICOPIRA</span></div>
+                <div class="system-marker">VER. 2026.07</div>
+            </div>
+            <div class="header-main">
+                <div class="header-title-block">
+                    <h1>Marcelle Sicopira</h1>
+                </div>
+                <div class="header-meta">
+                    A idade é apenas um número, porque a maturidade e a energia não seguem calendário.
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT GRID -->
+        <main class="cards-grid">
+            
+            <!-- CARD 01: MUSIC -->
+            <section class="card card-music">
+                <div class="card-header-top">
+                    <div class="card-icon-glow">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                </div>
+                
+                <div class="card-title-group">
+                    <h2>Música 🎵</h2>
+                    <p>Playlist // Suas Favoritas</p>
+                </div>
+
+                <!-- Custom HTML5 Media Player Widget -->
+                <div class="music-widget">
+                    <div class="player-info">
+                        <div class="vinyl-disk" id="player-disk"></div>
+                        <div class="track-details">
+                            <p class="track-title">Carregando...</p>
+                            <p class="track-artist">Buscando prévia</p>
+                        </div>
+                        <div class="soundwave">
+                            <div class="soundwave-bar"></div>
+                            <div class="soundwave-bar"></div>
+                            <div class="soundwave-bar"></div>
+                            <div class="soundwave-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="player-controls">
+                        <!-- Progress bar -->
+                        <div class="progress-container">
+                            <span id="current-time">0:00</span>
+                            <div class="progress-bar-bg" id="progress-bg">
+                                <div class="progress-bar-fill" id="progress-fill"></div>
+                            </div>
+                            <span id="total-time">0:30</span>
+                        </div>
+                        
+                        <div class="control-buttons-row">
+                            <div class="play-nav-buttons">
+                                <button class="control-btn" id="prev-btn" title="Anterior"><i class="fa-solid fa-backward"></i></button>
+                                <button class="control-btn play-btn" id="play-btn" title="Tocar / Pausar"><i class="fa-solid fa-play" id="play-icon"></i></button>
+                                <button class="control-btn" id="next-btn" title="Próxima"><i class="fa-solid fa-forward"></i></button>
+                            </div>
+                            <!-- External Link to Full Song on YouTube -->
+                            <a id="yt-link" href="#" target="_blank" class="yt-link-btn" title="Ouvir Música Completa no YouTube">
+                                <i class="fa-brands fa-youtube"></i> Ouvir Completa
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Playlist Tracks list -->
+                    <div class="playlist-container" id="playlist-list">
+                        <!-- Loaded via Javascript -->
+                    </div>
+                </div>
+
+                <div class="grid-decorations">
+                    <span class="design-sheet-info">SPECS // AUDIO_ENGINE</span>
+                    <span class="design-sheet-info">#F2F2F2</span>
+                </div>
+            </section>
+
+            <!-- CARD 02: JIU-JITSU & MUSCULAÇÃO -->
+            <section class="card card-jiujitsu">
+                <div class="card-header-top">
+                    <div class="card-icon-glow">
+                        <i class="fa-solid fa-dumbbell"></i>
+                    </div>
+                </div>
+
+                <div class="card-title-group">
+                    <h2>Jiu-jitsu e Musculação 🥋💪</h2>
+                    <p>Resiliência // Faixa Branca 3º Grau</p>
+                </div>
+
+                <!-- Interactive 3-stripe Belt Widget -->
+                <div class="jiujitsu-widget">
+                    <!-- Correct BJJ White Belt with 3 white stripes on black sleeve sleeve -->
+                    <div class="belt-representation" title="Faixa Branca // 3º Grau (3 Listras)">
+                        <div class="belt-fold"></div>
+                        <div class="belt-sleeve">
+                            <div class="belt-stripe"></div>
+                            <div class="belt-stripe"></div>
+                            <div class="belt-stripe"></div>
+                        </div>
+                    </div>
+                    <div class="belt-label">Faixa Branca // 3º Grau</div>
+                </div>
+
+                <div class="jiujitsu-photo-container" style="width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); margin-top: 0.5rem; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.2);">
+                    <img src="marcelle_jiujitsu.jpeg" alt="Marcelle no Jiu-Jitsu" style="width: 100%; max-height: 250px; object-fit: cover; transition: var(--transition-smooth); display: block;" class="bjj-photo">
+                </div>
+
+                <p class="card-desc" style="font-size: 0.85rem; font-style: italic; color: var(--text-secondary); line-height: 1.6; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1rem; text-align: center;">
+                    "O Jiu Jitsu tem me ensinado muito mais do que simplesmente técnica, a disciplina e a humildade aprendidas dentro do tatame estarão para sempre me acompanhando em todos os momentos da minha vida. Essa experiência faz parte de toda história que ainda há de ser vivida. OSS!"
+                </p>
+
+                <div class="grid-decorations">
+                    <span class="design-sheet-info">SPECS // MAT_TRAINING</span>
+                    <span class="design-sheet-info">#1A1A1A</span>
+                </div>
+            </section>
+
+            <!-- CARD 03: CIVIL ENGINEERING -->
+            <section class="card card-engineering">
+                <div class="card-header-top">
+                    <div class="card-icon-glow">
+                        <i class="fa-solid fa-helmet-safety"></i>
+                    </div>
+                </div>
+
+                <div class="card-title-group">
+                    <h2>Engenharia Civil 🏗️</h2>
+                    <p>Estrutura // Métricas & Dimensionamento</p>
+                </div>
+
+                <!-- Functional Engineering Concrete and Material Calculator -->
+                <div class="engineering-widget">
+                    <div class="concrete-calc">
+                        <span class="concrete-calc-title"><i class="fa-solid fa-cubes"></i> Calc. de Materiais de Concreto</span>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="calc-length">Comprim. (m)</label>
+                                <input type="number" id="calc-length" value="4" step="0.1" min="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="calc-width">Largura (m)</label>
+                                <input type="number" id="calc-width" value="3" step="0.1" min="0.1">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="calc-thick">Espessura (cm)</label>
+                                <input type="number" id="calc-thick" value="10" step="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="calc-mix">Traço Sugerido</label>
+                                <select id="calc-mix">
+                                    <option value="c20">C20 (Piso - 1:2:3)</option>
+                                    <option value="c25">C25 (Viga - 1:1.5:3)</option>
+                                    <option value="c30">C30 (Fundaç. - 1:1:2)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="engineering-calc-btn" id="btn-calc-concrete">
+                            <i class="fa-solid fa-compass-drafting"></i> Calcular Estrutura
+                        </button>
+
+                        <div class="concrete-results">
+                            <div class="result-tile">
+                                <span class="result-tile-label">Volume:</span>
+                                <span class="result-tile-val" id="res-volume">1.20<span>m³</span></span>
+                            </div>
+                            <div class="result-tile">
+                                <span class="result-tile-label">Cimento:</span>
+                                <span class="result-tile-val" id="res-cement">8.4<span>sacos</span></span>
+                            </div>
+                            <div class="result-tile">
+                                <span class="result-tile-label">Areia:</span>
+                                <span class="result-tile-val" id="res-sand">0.67<span>m³</span></span>
+                            </div>
+                            <div class="result-tile">
+                                <span class="result-tile-label">Brita:</span>
+                                <span class="result-tile-val" id="res-gravel">1.01<span>m³</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini CAD Blueprint display -->
+                    <div class="blueprint-container" id="blueprint-box">
+                        <svg class="blueprint-svg" viewBox="0 0 200 100">
+                            <!-- Base ground line -->
+                            <path class="blueprint-path" d="M 10,80 L 190,80" />
+                            <!-- Columns and Beams (Slab outline draw) -->
+                            <path class="blueprint-path" d="M 30,80 L 30,30 L 170,30 L 170,80" />
+                            <path class="blueprint-path" d="M 100,80 L 100,30" />
+                            <!-- Cross braces -->
+                            <path class="blueprint-path" d="M 30,30 L 100,80 M 100,30 L 30,80" />
+                            <path class="blueprint-path" d="M 100,30 L 170,80 M 170,30 L 100,80" />
+                            <!-- Ruler measurement indicator -->
+                            <path class="blueprint-path" stroke-dasharray="2,2" d="M 30,20 L 170,20" />
+                            <path class="blueprint-path" d="M 30,17 V 23 M 170,17 V 23" />
+                        </svg>
+                        <span class="blueprint-overlay-text" id="blueprint-label">CAD_VIEW: 1.20m³</span>
+                    </div>
+                </div>
+
+                <div class="grid-decorations">
+                    <span class="design-sheet-info">SPECS // CAD_CALC</span>
+                    <span class="design-sheet-info">#00F0FF</span>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- SYSTEM FOOTER -->
+        <footer>
+            <p>Desenvolvido por: Geovanna Andrade</p>
+        </footer>
+
+    </div>
+
+    <script>
+        /* 1. DYNAMIC NEON VECTOR PARTICLES BACKGROUND */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        const neonColors = [
+            'rgba(217, 70, 239, 0.07)', // Purple glow
+            'rgba(255, 75, 75, 0.07)',   // Red glow
+            'rgba(0, 240, 255, 0.07)',   // Cyan glow
+            'rgba(255, 255, 255, 0.03)'  // Soft white
+        ];
+        
+        // Simple shape vectors: cross (+), dot (.), square outline, thin lines
+        const shapeTypes = ['cross', 'dot', 'square', 'ring'];
+
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height;
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.size = Math.random() * 8 + 4;
+                this.speed = Math.random() * 0.4 + 0.15;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = (Math.random() - 0.5) * 0.01;
+                this.color = neonColors[Math.floor(Math.random() * neonColors.length)];
+                this.shape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.angle += this.spin;
+                this.x += Math.sin(this.angle * 0.2) * 0.1;
+
+                if (this.y < -20 || this.x < -20 || this.x > canvas.width + 20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.strokeStyle = this.color;
+                ctx.fillStyle = this.color;
+                ctx.lineWidth = 1;
+
+                if (this.shape === 'dot') {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size / 3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (this.shape === 'cross') {
+                    ctx.beginPath();
+                    ctx.moveTo(-this.size/2, 0);
+                    ctx.lineTo(this.size/2, 0);
+                    ctx.moveTo(0, -this.size/2);
+                    ctx.lineTo(0, this.size/2);
+                    ctx.stroke();
+                } else if (this.shape === 'square') {
+                    ctx.strokeRect(-this.size/2, -this.size/2, this.size, this.size);
+                } else if (this.shape === 'ring') {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const count = canvas.width < 768 ? 20 : 45;
+            particles = [];
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
+
+
+        /* 2. REAL BROWSER AUDIO PLAYER WIDGET (Using iTunes Search API Previews) */
+        const playlistList = document.getElementById('playlist-list');
+        const vinylDisk = document.getElementById('player-disk');
+        const trackTitle = document.querySelector('.track-title');
+        const trackArtist = document.querySelector('.track-artist');
+        
+        const playBtn = document.getElementById('play-btn');
+        const playIcon = document.getElementById('play-icon');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        const progressBg = document.getElementById('progress-bg');
+        const progressFill = document.getElementById('progress-fill');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+        const ytLinkBtn = document.getElementById('yt-link');
+
+        // Create browser native audio engine
+        const audio = new Audio();
+        let isPlaying = false;
+        let currentTrackIndex = 0;
+
+        // Song names & YouTube watch links
+        const tracks = [
+            { title: "Terminal", artist: "Tuyo", ytUrl: "https://www.youtube.com/watch?v=yYJ4h4qFhT8" },
+            { title: "Já Sei", artist: "Zimbra", ytUrl: "https://www.youtube.com/watch?v=k3YpP8g2p-Q" },
+            { title: "Missão Apollo", artist: "Zimbra", ytUrl: "https://www.youtube.com/watch?v=eYk8lq9w5t4" },
+            { title: "Antes Que Eu Morra", artist: "Sinara", ytUrl: "https://www.youtube.com/watch?v=wPQXlhtGiqk" },
+            { title: "Amanhã", artist: "Zimbra", ytUrl: "https://www.youtube.com/watch?v=gT8oK7j45S0" },
+            { title: "Piloto Automático", artist: "Supercombo", ytUrl: "https://www.youtube.com/watch?v=Jm3U4_q6w6s" }
+        ];
+
+        // Populate playlist UI
+        function populatePlaylist() {
+            playlistList.innerHTML = '';
+            tracks.forEach((track, index) => {
+                const numStr = (index + 1) < 10 ? `0${index + 1}` : `${index + 1}`;
+                
+                const item = document.createElement('div');
+                item.className = `playlist-item ${index === 0 ? 'active' : ''}`;
+                item.setAttribute('data-index', index);
+
+                item.innerHTML = `
+                    <span class="song-num">${numStr}</span>
+                    <div class="song-info">
+                        <span class="song-title">${track.title}</span>
+                        <span class="song-artist">${track.artist}</span>
+                    </div>
+                    <i class="fa-solid fa-circle-play play-icon-small"></i>
+                `;
+
+                item.addEventListener('click', () => {
+                    selectTrack(index);
+                });
+
+                playlistList.appendChild(item);
+            });
+        }
+
+        function selectTrack(index, autostart = true) {
+            currentTrackIndex = index;
+            
+            // Toggle active styling
+            document.querySelectorAll('.playlist-item').forEach((el, idx) => {
+                if (idx === index) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            const track = tracks[index];
+            trackTitle.textContent = track.title;
+            trackArtist.textContent = track.artist;
+            ytLinkBtn.href = track.ytUrl;
+
+            // Reset progress and display loading state
+            audio.pause();
+            isPlaying = false;
+            progressFill.style.width = '0%';
+            currentTimeEl.textContent = '0:00';
+            totalTimeEl.textContent = '0:30';
+            playIcon.className = "fa-solid fa-spinner fa-spin";
+            vinylDisk.classList.remove('playing');
+
+            // Search iTunes API dynamically for real MP3 preview (CORS-friendly, plays on file:// protocol!)
+            const query = encodeURIComponent(`${track.artist} ${track.title}`);
+            const searchUrl = `https://itunes.apple.com/search?term=${query}&limit=1&entity=song`;
+
+            fetch(searchUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.results && data.results.length > 0) {
+                        audio.src = data.results[0].previewUrl;
+                        if (autostart) {
+                            playAudio();
+                        } else {
+                            playIcon.className = "fa-solid fa-play";
+                        }
+                    } else {
+                        // Display error
+                        trackArtist.textContent = "Prévia indisponível";
+                        playIcon.className = "fa-solid fa-circle-exclamation";
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro ao buscar prévia no iTunes", err);
+                    trackArtist.textContent = "Erro de conexão";
+                    playIcon.className = "fa-solid fa-circle-exclamation";
+                });
+        }
+
+        function playAudio() {
+            audio.play()
+                .then(() => {
+                    isPlaying = true;
+                    playIcon.className = "fa-solid fa-pause";
+                    vinylDisk.classList.add('playing');
+                })
+                .catch(err => {
+                    console.error("Falha ao tocar áudio", err);
+                    playIcon.className = "fa-solid fa-play";
+                });
+        }
+
+        function pauseAudio() {
+            audio.pause();
+            isPlaying = false;
+            playIcon.className = "fa-solid fa-play";
+            vinylDisk.classList.remove('playing');
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                pauseAudio();
+            } else {
+                if (audio.src) {
+                    playAudio();
+                } else {
+                    selectTrack(currentTrackIndex, true);
+                }
+            }
+        }
+
+        function nextTrack() {
+            let nextIdx = (currentTrackIndex + 1) % tracks.length;
+            selectTrack(nextIdx, true);
+        }
+
+        function prevTrack() {
+            let prevIdx = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            selectTrack(prevIdx, true);
+        }
+
+        // Media Player Audio Events
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const pct = (audio.currentTime / audio.duration) * 100;
+                progressFill.style.width = `${pct}%`;
+                
+                let curMin = Math.floor(audio.currentTime / 60);
+                let curSec = Math.floor(audio.currentTime % 60);
+                currentTimeEl.textContent = `${curMin}:${curSec < 10 ? '0' : ''}${curSec}`;
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            let durMin = Math.floor(audio.duration / 60);
+            let durSec = Math.floor(audio.duration % 60);
+            totalTimeEl.textContent = `${durMin}:${durSec < 10 ? '0' : ''}${durSec}`;
+        });
+
+        audio.addEventListener('ended', () => {
+            vinylDisk.classList.remove('playing');
+            nextTrack(); // Auto-advance
+        });
+
+        // Click to change track progress
+        progressBg.addEventListener('click', (e) => {
+            if (audio.duration) {
+                const rect = progressBg.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const pct = clickX / rect.width;
+                audio.currentTime = pct * audio.duration;
+                progressFill.style.width = `${pct * 100}%`;
+            }
+        });
+
+        // Event listeners for control buttons
+        playBtn.addEventListener('click', togglePlay);
+        nextBtn.addEventListener('click', nextTrack);
+        prevBtn.addEventListener('click', prevTrack);
+
+        // Initialize playlist UI & first track
+        populatePlaylist();
+        selectTrack(0, false);
+
+
+        /* 3. FUNCTIONAL CIVIL ENGINEERING CONCRETE & MATERIAL CALCULATOR */
+        const btnCalcConcrete = document.getElementById('btn-calc-concrete');
+        const inputLength = document.getElementById('calc-length');
+        const inputWidth = document.getElementById('calc-width');
+        const inputThick = document.getElementById('calc-thick');
+        const selectMix = document.getElementById('calc-mix');
+
+        const resVolume = document.getElementById('res-volume');
+        const resCement = document.getElementById('res-cement');
+        const resSand = document.getElementById('res-sand');
+        const resGravel = document.getElementById('res-gravel');
+        
+        const blueprintBox = document.getElementById('blueprint-box');
+        const blueprintLabel = document.getElementById('blueprint-label');
+
+        function calculateConcrete() {
+            const length = parseFloat(inputLength.value);
+            const width = parseFloat(inputWidth.value);
+            const thickCm = parseFloat(inputThick.value);
+
+            if (isNaN(length) || isNaN(width) || isNaN(thickCm) || length <= 0 || width <= 0 || thickCm <= 0) return;
+
+            // Volume in m³
+            const volume = length * width * (thickCm / 100);
+            resVolume.innerHTML = `${volume.toFixed(2)}<span>m³</span>`;
+
+            // Set dynamic blueprint labels
+            blueprintLabel.textContent = `CAD_VIEW: ${volume.toFixed(2)}m³`;
+
+            // Mix Coefficients (Cement in bags, Sand in m³, Gravel in m³ per cubic meter)
+            let cementPerM3 = 7.0;  // bags of 50kg
+            let sandPerM3 = 0.56;   // m³
+            let gravelPerM3 = 0.84; // m³
+
+            const mix = selectMix.value;
+            if (mix === 'c25') {
+                cementPerM3 = 7.6;
+                sandPerM3 = 0.48;
+                gravelPerM3 = 0.95;
+            } else if (mix === 'c30') {
+                cementPerM3 = 9.2;
+                sandPerM3 = 0.45;
+                gravelPerM3 = 0.88;
+            }
+
+            const totalCementBags = (volume * cementPerM3).toFixed(1);
+            const totalSandM3 = (volume * sandPerM3).toFixed(2);
+            const totalGravelM3 = (volume * gravelPerM3).toFixed(2);
+
+            resCement.innerHTML = `${totalCementBags}<span>sacos</span>`;
+            resSand.innerHTML = `${totalSandM3}<span>m³</span>`;
+            resGravel.innerHTML = `${totalGravelM3}<span>m³</span>`;
+
+            // Trigger blueprint redraw animation
+            blueprintBox.classList.remove('drawn');
+            setTimeout(() => {
+                blueprintBox.classList.add('drawn');
+            }, 50);
+        }
+
+        btnCalcConcrete.addEventListener('click', calculateConcrete);
+        // Initial run
+        calculateConcrete();
+
+    </script>
+</body>
+</html>
