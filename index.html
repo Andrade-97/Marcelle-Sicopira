@@ -609,6 +609,74 @@
             text-transform: uppercase;
         }
 
+        /* Blue Belt Loading Widget */
+        .blue-belt-loading {
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            background: rgba(59, 130, 246, 0.04);
+            border-radius: 14px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+        }
+
+        .loading-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .loading-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .loading-pct {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .loading-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #1d40af, #3b82f6);
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+            animation: loadingPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; filter: brightness(1.25); }
+        }
+
+        .loading-status {
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+        }
+
+        .loading-status i {
+            color: #3b82f6;
+        }
+
         /* 03. CIVIL ENGINEERING WIDGETS */
         .engineering-widget {
             display: flex;
@@ -879,8 +947,7 @@
 
     <div class="wrapper">
         
-        <!-- SYSTEM SPEC LABELS -->
-        <div class="spec-label">VISUAL IDENTITY SYSTEM // ACTIVE</div>
+
 
         <!-- HEADER BOARD -->
         <header>
@@ -959,22 +1026,19 @@
                     </div>
                 </div>
 
-                <div class="grid-decorations">
-                    <span class="design-sheet-info">SPECS // AUDIO_ENGINE</span>
-                    <span class="design-sheet-info">#F2F2F2</span>
-                </div>
+
             </section>
 
-            <!-- CARD 02: JIU-JITSU & MUSCULAÇÃO -->
+            <!-- CARD 02: JIU-JITSU -->
             <section class="card card-jiujitsu">
                 <div class="card-header-top">
                     <div class="card-icon-glow">
-                        <i class="fa-solid fa-dumbbell"></i>
+                        <i class="fa-solid fa-user-ninja"></i>
                     </div>
                 </div>
 
                 <div class="card-title-group">
-                    <h2>Jiu-jitsu e Musculação 🥋💪</h2>
+                    <h2>Jiu-jitsu 🥋</h2>
                     <p>Resiliência // Faixa Branca 3º Grau</p>
                 </div>
 
@@ -990,6 +1054,20 @@
                         </div>
                     </div>
                     <div class="belt-label">Faixa Branca // 3º Grau</div>
+
+                    <!-- Blue Belt Progress Indicator -->
+                    <div class="blue-belt-loading">
+                        <div class="loading-header">
+                            <span class="loading-title">Caminho para a Faixa Azul 🥋💙</span>
+                            <span class="loading-pct">75%</span>
+                        </div>
+                        <div class="loading-bar-bg">
+                            <div class="loading-bar-fill" style="width: 75%;"></div>
+                        </div>
+                        <span class="loading-status">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Próxima meta: 4º Grau da Faixa Branca
+                        </span>
+                    </div>
                 </div>
 
                 <div class="jiujitsu-photo-container" style="width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); margin-top: 0.5rem; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.2);">
@@ -1000,10 +1078,7 @@
                     "O Jiu Jitsu tem me ensinado muito mais do que simplesmente técnica, a disciplina e a humildade aprendidas dentro do tatame estarão para sempre me acompanhando em todos os momentos da minha vida. Essa experiência faz parte de toda história que ainda há de ser vivida. OSS!"
                 </p>
 
-                <div class="grid-decorations">
-                    <span class="design-sheet-info">SPECS // MAT_TRAINING</span>
-                    <span class="design-sheet-info">#1A1A1A</span>
-                </div>
+
             </section>
 
             <!-- CARD 03: CIVIL ENGINEERING -->
@@ -1092,10 +1167,7 @@
                     </div>
                 </div>
 
-                <div class="grid-decorations">
-                    <span class="design-sheet-info">SPECS // CAD_CALC</span>
-                    <span class="design-sheet-info">#00F0FF</span>
-                </div>
+
             </section>
 
         </main>
