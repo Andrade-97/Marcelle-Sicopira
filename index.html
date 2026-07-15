@@ -36,6 +36,10 @@
             --neon-jiujitsu-glow: rgba(255, 75, 75, 0.15);
             --neon-engineering: #00f0ff;
             --neon-engineering-glow: rgba(0, 240, 255, 0.15);
+            --neon-doc: #f59e0b;
+            --neon-doc-glow: rgba(245, 158, 11, 0.15);
+            --neon-sobre: #f43f5e;
+            --neon-sobre-glow: rgba(244, 63, 94, 0.15);
 
             --font-mono: 'Fira Code', monospace;
             --font-sans: 'Outfit', sans-serif;
@@ -918,6 +922,163 @@
             50% { transform: scale(1.15); }
         }
 
+        /* 04. DOCUMENT / PDF CARD */
+        .card-doc:hover {
+            border-color: var(--neon-doc);
+            box-shadow: 0 10px 30px var(--neon-doc-glow);
+        }
+
+        .card-doc .card-icon-glow { color: var(--neon-doc); box-shadow: inset 0 0 10px rgba(245, 158, 11, 0.15); }
+
+        /* Doc summary block */
+        .doc-summary-block {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .doc-summary-label {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: #f59e0b;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .doc-summary-text {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            border-left: 2px solid #f59e0b;
+            padding-left: 1rem;
+        }
+
+        .doc-meta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.4rem;
+        }
+
+        .doc-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Open PDF Button */
+        .open-doc-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0.75rem 1.2rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.06));
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 12px;
+            color: #f59e0b;
+            font-family: var(--font-sans);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+
+        .open-doc-btn:hover {
+            background: #f59e0b;
+            color: #0b0b0d;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .open-doc-btn i {
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .open-doc-btn:hover i {
+            transform: scale(1.15);
+        }
+
+        /* Quote block inside doc card */
+        .doc-quote {
+            font-style: italic;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1rem;
+            margin-top: 0.4rem;
+        }
+
+        /* 05. SOBRE CARD — redesigned quality grid */
+        .card-sobre {
+            padding: 1.5rem;
+            gap: 1rem;
+        }
+
+        .card-sobre:hover {
+            border-color: var(--neon-sobre);
+            box-shadow: 0 10px 30px var(--neon-sobre-glow);
+        }
+
+        .card-sobre .card-icon-glow { color: var(--neon-sobre); box-shadow: inset 0 0 10px rgba(244, 63, 94, 0.15); }
+
+        .sobre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .sobre-tile {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 1.1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            transition: var(--transition-smooth);
+        }
+
+        .sobre-tile:hover {
+            background: rgba(244, 63, 94, 0.05);
+            border-color: rgba(244, 63, 94, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(244, 63, 94, 0.08);
+        }
+
+        .sobre-tile i {
+            color: var(--neon-sobre);
+            font-size: 0.95rem;
+            margin-top: 3px;
+            flex-shrink: 0;
+            text-shadow: 0 0 8px rgba(244, 63, 94, 0.4);
+        }
+
+        .sobre-tile span {
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
         /* RESPONSIVE LAYOUT */
         @media (max-width: 768px) {
             h1 {
@@ -968,6 +1129,56 @@
         <!-- MAIN LAYOUT GRID -->
         <main class="cards-grid">
             
+            <!-- CARD 00: SOBRE -->
+            <section class="card card-sobre" id="card-sobre" style="grid-column: 1 / -1;">
+
+
+                <div class="card-header-top">
+                    <div class="card-icon-glow">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="card-title-group">
+                    <h2>Sobre</h2>
+                </div>
+
+                <div class="sobre-grid">
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <span>Trabalha e corre atrás das suas coisas.</span>
+                    </div>
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Super desenrolada para resolver qualquer problema.</span>
+                    </div>
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-smile-beam"></i>
+                        <span>Prática, leve e sem frescura com a vida.</span>
+                    </div>
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-face-laugh-wink"></i>
+                        <span>Autêntica, divertida e com uma vibe contagiante.</span>
+                    </div>
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-user-ninja"></i>
+                        <span>Fã de Jiu-Jitsu.</span>
+                    </div>
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-dumbbell"></i>
+                        <span>Gosta de treinar.</span>
+                    </div>
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-music"></i>
+                        <span>Apaixonada por música e novas playlists.</span>
+                    </div>
+                    <div class="sobre-tile">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Determinada nos estudos e na futura carreira.</span>
+                    </div>
+                </div>
+            </section>
+
             <!-- CARD 01: MUSIC -->
             <section class="card card-music">
                 <div class="card-header-top">
@@ -1168,6 +1379,39 @@
                 </div>
 
 
+            </section>
+
+            <!-- CARD 04: DOCUMENTO PDF -->
+            <section class="card card-doc" id="card-supica-sossego">
+                <div class="card-header-top">
+                    <div class="card-icon-glow">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                </div>
+
+                <div class="card-title-group">
+                    <h2>Súplica por Sossego 📄</h2>
+                    <p>Documento // Leitura & Reflexão</p>
+                </div>
+
+                <!-- Summary Block -->
+                <div class="doc-summary-block">
+                    <span class="doc-summary-label"><i class="fa-solid fa-align-left"></i> Resumo do Documento</span>
+                    <p class="doc-summary-text">
+                        Um texto reflexivo sobre o desejo por paz interior e quietude. Uma súplica sincera por descanso da mente e do espírito.
+                    </p>
+
+                </div>
+
+                <!-- Open Document Button -->
+                <a href="Súplica por Sossego.pdf" target="_blank" class="open-doc-btn" id="btn-open-supica" title="Abrir documento PDF">
+                    <i class="fa-solid fa-book-open"></i>
+                    Abrir e Ler o Documento
+                </a>
+
+                <p class="doc-quote">
+                    "O sossego não é ausência de barulho."
+                </p>
             </section>
 
         </main>
